@@ -1,3 +1,6 @@
+# Local development certificates
+/certs
+
 # Logs
 logs
 *.log

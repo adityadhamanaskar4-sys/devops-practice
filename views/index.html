@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/submit" method="POST">
+        <input name="username" type="text" placeholder="Enter your name"/>
+        <input name="email" type="email" placeholder="Enter your email" />
+        <button>Submit</button>
+    </form>
+    <h1>Users</h1>
+    <div id="users-list"></div>
+</body>
+<script>
+    fetch('/users')
+    .then(res => res.json())
+    .then(users => {
+        const ul = document.getElementById('users-list');
+        users.forEach(user => {
+            ul.innerHTML += `
+                <div id="${user._id}">
+                    <input type="text" value="${user.username} - ${user.email}" readonly />
+                    <button onclick="deleteUser('${user._id}')">
+                        Delete
+                    </button>
+                    <button onclick="updateUser('${user._id}')">
+                        Update
+                    </button>
+                </div>
+            `;
+        });
+    });
+    deleteUser = (id) => {
+        fetch(`/users/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                document.getElementById(id).remove();
+            }
+        });
+    }
+    updateUser = (id) => {
+        const newUsername = prompt("Enter new username:");
+        const newEmail = prompt("Enter new email:");
+        if(newUsername && newEmail){
+            fetch(`/users/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: newUsername, email: newEmail })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    document.getElementById(id).querySelector('input').value = `${newUsername} - ${newEmail}`;
+                }
+            });
+        }
+    }
+</script>
+</html>
