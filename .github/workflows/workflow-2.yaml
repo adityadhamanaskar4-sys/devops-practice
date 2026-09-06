@@ -1,0 +1,21 @@
+name: Step Types
+
+on:
+    workflow_dispatch:
+
+jobs:
+    say-hello:
+        runs-on: ubuntu-24.04
+        steps:
+            - run: echo "Hello"
+    say-hello-python:
+        runs-on: ubuntu-24.04
+        steps:
+            - run: print("Hello")
+              shell: python
+    say-hello-action:
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: jairogomz/hello-world-javascript-action-by-jairo@v1.0.1
+              with:
+                who-to-greet: "hello from actions marketplace"
