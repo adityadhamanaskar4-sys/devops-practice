@@ -2,7 +2,7 @@ name: Trigger
 on:
     push:
         branches:
-            - "example_branch/*"
+            - example_branch
 jobs:
     push_action:
         runs-on: ubuntu-24.04
