@@ -1,0 +1,13 @@
+name: Trigger
+on:
+    push:
+        branches:
+            - "example_branch/*"
+jobs:
+    push_action:
+        runs-on: ubuntu-24.04
+        steps:
+            - run: echo "Somthing was pushed on example_branch/*"
+            - run: |
+                echo "=== $GITHUB_EVENT_NAME payload ==="
+                cat "$GITHUB_EVENT_PATH"
