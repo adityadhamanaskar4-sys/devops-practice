@@ -1,0 +1,19 @@
+name: pull request trigger
+
+on:
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
+        paths:
+            - "docs/*.md"
+            - "!docs/*.txt"
+jobs:
+    pull_request_action:
+        runs-on: ubuntu-24.04
+        steps:
+            - run: echo "pull request made changed .md file in docs"
+            - run: |
+                echo "=== $GITHUB_EVENT_NAME payload ==="
+                cat "$GITHUB_EVENT_PATH"
