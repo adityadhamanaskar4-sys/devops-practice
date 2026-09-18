@@ -15,16 +15,15 @@ async function connect(){
         console.log(err);
     }
 }
-connect();
 app.get('/',(req,res)=>{
     res.sendFile(__dirname+"/views/index.html");
     console.log("index page served by "+instance);
 })
 app.post('/submit',async (req,res)=>{
     try{
-        const user= await User.create(req.body);
+        await User.create(req.body);
         res.send("User saved successfully <a href='/'>View Users</a>");
-    }catch(err){
+    }catch{
         res.status(500).send("Error saving user");
     }
 })
@@ -32,7 +31,7 @@ app.get('/users',async (req,res)=>{
     try{
         const users= await User.find();
         res.json(users);
-    }catch(err){
+    }catch{
         res.status(500).send("Error fetching users");
     }
 });
@@ -43,7 +42,7 @@ app.delete('/users/:id',async (req,res)=>{
             return res.status(404).send("User not found");
         }
         res.send("User deleted successfully");
-    }catch(err){
+    }catch{
         res.status(500).send("Error deleting user");
     }   
 });
@@ -54,8 +53,13 @@ app.put('/users/:id',async (req,res)=>{
             return res.status(404).send("User not found");
         }
         res.json(user);
-    }catch(err){
+    }catch{
         res.status(500).send("Error updating user");
     }
 });
-app.listen(3000,()=>{console.log(`${instance} running on port 3000`)});
+if (require.main === module) {
+    connect();
+    app.listen(3000,()=>{console.log(`${instance} running on port 3000`)});
+}
+
+module.exports = { app, connect };
