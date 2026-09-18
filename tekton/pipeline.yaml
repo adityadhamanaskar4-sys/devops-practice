@@ -1,0 +1,50 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: build-and-test-pipeline
+spec:
+  params:
+    - name: repo-url
+      description: The git repository URL to clone
+    - name: image-reference
+      description: Where to push the built Docker image
+  workspaces:
+      - name: shared-workspace
+  tasks:
+    - name: fetch-repo
+      taskRef: 
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.repo-url)
+    - name: lint-code
+      taskRef:
+        name: eslint
+      runAfter:
+        - fetch-repo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: run-test
+      taskRef:
+        name: jest
+      runAfter:
+        - fetch-repo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: build-docker-image
+      taskRef:
+        name: kaniko
+      runAfter:
+        - lint-code
+        - run-test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: IMAGE
+          value: $(params.image-reference)

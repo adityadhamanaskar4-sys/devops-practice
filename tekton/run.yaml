@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: demo-pipeline-run-
+spec:
+  pipelineRef:
+    name: build-and-test-pipeline
+  params:
+    - name: repo-url
+      value: "https://github.com/adityadhamanaskar4-sys/devops-practice.git"
+    - name: image-reference
+      value: "ttl.sh/my-tekton-practice-image:2h"
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
