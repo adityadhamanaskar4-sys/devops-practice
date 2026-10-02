@@ -23,3 +23,11 @@ jobs:
                 run: npm run lint
             -   name: Run jest test
                 run: npm test
+            -   name: Deep Clean Workspace
+                if: always() # Ensures cleanup happens even if Jest tests fail
+                run: |
+                    echo "Cleaning up workspace to save disk space..."
+                    rm -rf ${{ github.workspace }}/*
+                    rm -rf ${{ github.workspace }}/.[!.]*
+                    rm -rf ${{ github.workspace }}/..?*
+                    
