@@ -11,6 +11,7 @@ spec:
   workspaces:
       - name: shared-workspace
   tasks:
+    # clone repo
     - name: fetch-repo
       taskRef: 
         name: git-clone
@@ -20,22 +21,36 @@ spec:
       params:
         - name: url
           value: $(params.repo-url)
+    # install dependencies
+    - name: install-dependencies
+      taskRef:
+        name: npm-install
+      runAfter:
+        - fetch-repo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    # eslinting
     - name: lint-code
       taskRef:
         name: eslint
       runAfter:
         - fetch-repo
+        - install-dependencies
       workspaces:
         - name: source
           workspace: shared-workspace
+    # testing
     - name: run-test
       taskRef:
         name: jest
       runAfter:
         - fetch-repo
+        - install-dependencies
       workspaces:
         - name: source
           workspace: shared-workspace
+    # build image
     - name: build-docker-image
       taskRef:
         name: kaniko

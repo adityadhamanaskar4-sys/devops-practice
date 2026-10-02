@@ -3,6 +3,8 @@ kind: PipelineRun
 metadata:
   generateName: demo-pipeline-run-
 spec:
+  taskRunTemplate:
+    serviceAccountName: pipeline-runner
   pipelineRef:
     name: build-and-test-pipeline
   params:
