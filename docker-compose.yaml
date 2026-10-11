@@ -1,4 +1,14 @@
 services:
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand('ping').ok\" | grep 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   nginx:
     image: nginx:alpine
     ports:
@@ -9,20 +19,15 @@ services:
       - ./certs:/etc/nginx/certs:ro
     depends_on:
       - app1
-      - app2
-      - app3
 
   app1:
     build: .
     environment:
       - APP_NAME=app1
-  
-  app2:
-    build: .
-    environment:
-      - APP_NAME=app2
-  
-  app3:
-    build: .
-    environment:
-      - APP_NAME=app3
+      - MONGO_URI=mongodb://mongo:27017/test
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

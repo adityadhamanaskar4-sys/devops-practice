@@ -9,7 +9,7 @@ app.use(Express.json());
 const instance=process.env.APP_NAME
 async function connect(){
     try{
-        await mongoose.connect("mongodb://aditya:abcdef@host.docker.internal:27017/test?authSource=admin");
+        await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/test");
         console.log("connected to db");
     }catch(err){
         console.log(err);
